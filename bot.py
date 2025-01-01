@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from telegram import Bot
 import time
+import asyncio
 from selenium.webdriver.chrome.options import Options
 
 # Your Telegram Bot Token
@@ -24,8 +25,9 @@ driver.maximize_window()
 # Telegram bot setup
 bot = Bot(token=BOT_TOKEN)
 
-def send_message(message: str):
-    bot.send_message(chat_id=CHAT_ID, text=message)
+# Function to send message to Telegram (now asynchronous)
+async def send_message(message: str):
+    await bot.send_message(chat_id=CHAT_ID, text=message)
 
 # Function to bypass ads, timers, and make buttons clickable immediately
 def advanced_bypass():
@@ -55,11 +57,11 @@ def advanced_bypass():
                 driver.execute_script("arguments[0].click();", button)
                 time.sleep(0.1)
     except Exception as e:
-        send_message(f"An error occurred during bypass: {e}")
+        asyncio.run(send_message(f"An error occurred during bypass: {e}"))
 
 # Main loop to bypass each page's ads and timers
-def start():
-    send_message("Starting to bypass ads and timers...")
+async def start():
+    await send_message("Starting to bypass ads and timers...")
     start_time = time.time()
     for _ in range(4):  
         advanced_bypass()
@@ -70,14 +72,14 @@ def start():
             )
             driver.execute_script("arguments[0].click();", final_button)
             final_link = driver.current_url  # Get the final link URL
-            send_message(f"Successfully reached the final link: {final_link}")
+            await send_message(f"Successfully reached the final link: {final_link}")
             break
         except Exception as e:
-            send_message("Proceeding to the next page or retrying: " + str(e))
+            await send_message("Proceeding to the next page or retrying: " + str(e))
 
     if (time.time() - start_time) < 5:
         time.sleep(200)
     driver.quit()
 
 # Start the process
-start()
+asyncio.run(start())
