@@ -4,13 +4,21 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from telegram import Bot
 import time
+from selenium.webdriver.chrome.options import Options
 
 # Your Telegram Bot Token
 BOT_TOKEN = '6934514903:AAHLVkYqPEwyIZiyqEhJocOrjDYwTk9ue8Y'  # Replace with your Telegram bot token
-CHAT_ID = '-1002066437865'      # Replace with your Telegram chat ID
+CHAT_ID = '-1002066437865'   # Replace with your Telegram chat ID
 
-# Initialize WebDriver
-driver = webdriver.Chrome()  # Ensure ChromeDriver is in your PATH
+# Initialize ChromeOptions for headless mode and other necessary options
+options = Options()
+options.add_argument("--headless")  # Run in headless mode
+options.add_argument("--no-sandbox")  # For Linux systems
+options.add_argument("--disable-dev-shm-usage")  # For Linux systems
+options.add_argument("--remote-debugging-port=9222")  # Fix for DevToolsActivePort error
+
+# Initialize WebDriver with the options
+driver = webdriver.Chrome(options=options)  # Ensure ChromeDriver is in your PATH
 driver.maximize_window()
 
 # Telegram bot setup
